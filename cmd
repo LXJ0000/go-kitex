@@ -9,4 +9,4 @@ replace (
 	github.com/LXJ0000/go-kitex/rpc_gen => ../../rpc_gen
 )
 
-cwgo server --type HTTP --server_name gateway --module github.com/LXJ0000/go-kitex/app/gateway --I ../../idl --idl ../../idl/gateway/ping.proto --pass "-use github.com/LXJ0000/go-kitex/rpc_gen/kitex_gen"
+cwgo server --type HTTP --server_name gateway --module github.com/LXJ0000/go-kitex/app/gateway --I ../../idl --idl ../../idl/gateway/ping.proto
