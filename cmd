@@ -10,3 +10,5 @@ replace (
 )
 
 cwgo server --type HTTP --server_name gateway --module github.com/LXJ0000/go-kitex/app/gateway --I ../../idl --idl ../../idl/gateway/ping.proto
+
+cwgo server --type HTTP --server_name gateway --module github.com/LXJ0000/go-kitex/app/gateway --I ../../idl --idl ../../idl/gateway/auth.proto

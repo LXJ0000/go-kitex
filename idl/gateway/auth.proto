@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package gateway.auth;
+
+import "api.proto";
+import "gateway/common.proto";
+
+option go_package = "/gateway/auth";
+
+message RegisterReq {
+    string email = 1 [(api.form) = "email"];
+    string password = 2 [(api.form) = "password"];
+    string confirm_password = 3 [(api.form) = "confirm_password"];
+}
+
+message LoginReq {
+    string email = 1 [(api.form) = "email"];
+    string password = 2 [(api.form) = "password"];
+    string next = 3 [(api.query) = "next"];
+}
+
+message RegisterResp {
+    int32 user_id = 1;
+}
+
+message LoginResp {
+    int32 user_id = 1;
+}
+
+message SendSmsCodeReq {
+    string phone = 1 [(api.form) = "phone"];
+}
+
+message LoginSmsCodeReq {
+    string phone = 1 [(api.form) = "phone"];
+    string code = 2 [(api.form) = "code"];
+}
+
+message LoginSmsCodeResp {
+    int32 user_id = 1;
+}
+
+service AuthService {
+    rpc register(RegisterReq) returns (RegisterResp) {
+        option (api.post) = "/auth/register";
+    }
+    rpc login(LoginReq) returns (LoginResp) {
+        option (api.post) = "/auth/login";
+    }
+    rpc logout(common.Empty) returns (common.Empty) {
+        option (api.post) = "/auth/logout";
+    }
+    rpc send_sms_code(SendSmsCodeReq) returns (common.Empty) {
+        option (api.post) = "/auth/send.sms.code";
+    }
+    rpc login_sms_code(LoginSmsCodeReq) returns (LoginSmsCodeResp) {
+        option (api.post) = "/auth/login.sms.code";
+    }
+}
