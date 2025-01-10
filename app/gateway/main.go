@@ -8,6 +8,7 @@ import (
 
 	"github.com/LXJ0000/go-kitex/app/gateway/biz/router"
 	"github.com/LXJ0000/go-kitex/app/gateway/conf"
+	"github.com/LXJ0000/go-kitex/app/gateway/infra/rpc"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -19,13 +20,20 @@ import (
 	"github.com/hertz-contrib/logger/accesslog"
 	hertzlogrus "github.com/hertz-contrib/logger/logrus"
 	"github.com/hertz-contrib/pprof"
+	"github.com/joho/godotenv"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
-	// init dal
-	// dal.Init()
+	// load .env
+	if err := godotenv.Load(); err != nil {
+		panic("Error loading .env file")
+	}
+
+	// init rpc client
+	rpc.Init()
+
 	address := conf.GetConf().Hertz.Address
 	h := server.New(server.WithHostPorts(address))
 

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	common "github.com/LXJ0000/go-kitex/app/gateway/hertz_gen/common"
-	auth "github.com/LXJ0000/go-kitex/app/gateway/hertz_gen/gateway/auth"
+	auth2 "github.com/LXJ0000/go-kitex/app/gateway/hertz_gen/gateway/auth2"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -17,7 +17,7 @@ func NewSendSmsCodeService(Context context.Context, RequestContext *app.RequestC
 	return &SendSmsCodeService{RequestContext: RequestContext, Context: Context}
 }
 
-func (h *SendSmsCodeService) Run(req *auth.SendSmsCodeReq) (resp *common.Empty, err error) {
+func (h *SendSmsCodeService) Run(req *auth2.SendSmsCodeReq) (resp *common.Empty, err error) {
 	//defer func() {
 	// hlog.CtxInfof(h.Context, "req = %+v", req)
 	// hlog.CtxInfof(h.Context, "resp = %+v", resp)

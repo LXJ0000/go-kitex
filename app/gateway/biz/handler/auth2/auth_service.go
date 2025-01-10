@@ -1,4 +1,4 @@
-package auth
+package auth2
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"github.com/LXJ0000/go-kitex/app/gateway/biz/service"
 	"github.com/LXJ0000/go-kitex/app/gateway/biz/utils"
 	common "github.com/LXJ0000/go-kitex/app/gateway/hertz_gen/common"
-	auth "github.com/LXJ0000/go-kitex/app/gateway/hertz_gen/gateway/auth"
+	auth2 "github.com/LXJ0000/go-kitex/app/gateway/hertz_gen/gateway/auth2"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 )
@@ -15,14 +15,14 @@ import (
 // @router /auth/register [POST]
 func Register(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req auth.RegisterReq
+	var req auth2.RegisterReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
-	resp := &auth.RegisterResp{}
+	resp := &auth2.RegisterResp{}
 	resp, err = service.NewRegisterService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
@@ -36,14 +36,14 @@ func Register(ctx context.Context, c *app.RequestContext) {
 // @router /auth/login [POST]
 func Login(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req auth.LoginReq
+	var req auth2.LoginReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
-	resp := &auth.LoginResp{}
+	resp := &auth2.LoginResp{}
 	resp, err = service.NewLoginService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
@@ -78,7 +78,7 @@ func Logout(ctx context.Context, c *app.RequestContext) {
 // @router /auth/send.sms.code [POST]
 func SendSmsCode(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req auth.SendSmsCodeReq
+	var req auth2.SendSmsCodeReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
@@ -99,14 +99,14 @@ func SendSmsCode(ctx context.Context, c *app.RequestContext) {
 // @router /auth/login.sms.code [POST]
 func LoginSmsCode(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req auth.LoginSmsCodeReq
+	var req auth2.LoginSmsCodeReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
 
-	resp := &auth.LoginSmsCodeResp{}
+	resp := &auth2.LoginSmsCodeResp{}
 	resp, err = service.NewLoginSmsCodeService(ctx, c).Run(&req)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)

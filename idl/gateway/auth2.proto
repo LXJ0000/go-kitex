@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package gateway.auth;
+package gateway.auth2;
 
 import "api.proto";
 import "gateway/common.proto";
 
-option go_package = "/gateway/auth";
+option go_package = "/gateway/auth2";
 
 message RegisterReq {
     string email = 1 [(api.form) = "email"];

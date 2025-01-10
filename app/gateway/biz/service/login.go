@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	auth "github.com/LXJ0000/go-kitex/app/gateway/hertz_gen/gateway/auth"
+	auth2 "github.com/LXJ0000/go-kitex/app/gateway/hertz_gen/gateway/auth2"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -16,7 +16,7 @@ func NewLoginService(Context context.Context, RequestContext *app.RequestContext
 	return &LoginService{RequestContext: RequestContext, Context: Context}
 }
 
-func (h *LoginService) Run(req *auth.LoginReq) (resp *auth.LoginResp, err error) {
+func (h *LoginService) Run(req *auth2.LoginReq) (resp *auth2.LoginResp, err error) {
 	//defer func() {
 	// hlog.CtxInfof(h.Context, "req = %+v", req)
 	// hlog.CtxInfof(h.Context, "resp = %+v", resp)

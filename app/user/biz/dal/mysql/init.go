@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"github.com/LXJ0000/go-kitex/app/user/conf"
+	"github.com/LXJ0000/go-kitex/app/user/model"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -19,6 +20,7 @@ func Init() {
 			SkipDefaultTransaction: true,
 		},
 	)
+	DB.AutoMigrate(&model.User{})
 	if err != nil {
 		panic(err)
 	}
