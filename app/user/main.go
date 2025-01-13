@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"net"
 	"os"
 	"time"
@@ -19,11 +20,41 @@ import (
 )
 
 var (
-	serviceName = conf.GetConf().Kitex.Service
-	metricsPort = conf.GetConf().Kitex.MetricsPort
+	serviceName      string
+	metricsPort      string
+	registryAddr     string
+	registerUserName string
+	registerPassword string
 )
 
+func initEnv() {
+	// load .env
+	if err := godotenv.Load(); err != nil {
+		klog.Fatal("Error loading .env file")
+	}
+	registryAddr = os.Getenv("ETCD_ADDR")
+	registerUserName = os.Getenv("ETCD_USERNAME")
+	registerPassword = os.Getenv("ETCD_PASSWORD")
+
+	serviceName = conf.GetConf().Kitex.Service
+	metricsPort = conf.GetConf().Kitex.MetricsPort
+}
+
 func main() {
+	// load .env
+	initEnv()
+
+	// tracing init
+	p := mtl.InitTracing(serviceName)
+	defer p.Shutdown(context.Background())
+
+	// mtl init
+	r, info := mtl.InitMetric(serviceName, registryAddr, registerUserName, registerPassword, metricsPort)
+	defer r.Deregister(info)
+
+	// dal init
+	dal.Init()
+
 	opts := kitexInit()
 
 	svr := userservice.NewServer(new(UserServiceImpl), opts...)
@@ -35,22 +66,6 @@ func main() {
 }
 
 func kitexInit() (opts []server.Option) {
-	// load .env
-	if err := godotenv.Load(); err != nil {
-		klog.Fatal("Error loading .env file")
-	}
-	var (
-		registryAddr     = os.Getenv("ETCD_ADDR")
-		registerUserName = os.Getenv("ETCD_USERNAME")
-		registerPassword = os.Getenv("ETCD_PASSWORD")
-	)
-
-	// mtl init
-	mtl.InitMetric(serviceName, registryAddr, registerUserName, registerPassword, metricsPort)
-
-	// init dal
-	dal.Init()
-
 	// address
 	addr, err := net.ResolveTCPAddr("tcp", conf.GetConf().Kitex.Address)
 	if err != nil {

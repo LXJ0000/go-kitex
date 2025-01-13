@@ -4,11 +4,13 @@ package main
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"github.com/LXJ0000/go-kitex/app/gateway/biz/router"
 	"github.com/LXJ0000/go-kitex/app/gateway/conf"
 	"github.com/LXJ0000/go-kitex/app/gateway/infra/rpc"
+	"github.com/LXJ0000/go-kitex/common/mtl"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -25,11 +27,37 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-func main() {
+var (
+	serviceName      string
+	metricsPort      string
+	registryAddr     string
+	registerUserName string
+	registerPassword string
+)
+
+func initEnv() {
 	// load .env
 	if err := godotenv.Load(); err != nil {
-		panic("Error loading .env file")
+		hlog.Fatal("Error loading .env file")
 	}
+	registryAddr = os.Getenv("ETCD_ADDR")
+	registerUserName = os.Getenv("ETCD_USERNAME")
+	registerPassword = os.Getenv("ETCD_PASSWORD")
+
+	serviceName = conf.GetConf().Hertz.Service
+	metricsPort = conf.GetConf().Hertz.MetricsPort
+}
+
+func main() {
+	// load .env
+	initEnv()
+
+	// mtl init
+	r, info := mtl.InitMetric(serviceName, registryAddr, registerUserName, registerPassword, metricsPort)
+	defer r.Deregister(info)
+
+	p := mtl.InitTracing(serviceName)
+	defer p.Shutdown(context.Background())
 
 	// init rpc client
 	rpc.Init()
