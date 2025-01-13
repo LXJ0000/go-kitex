@@ -7,6 +7,7 @@ import (
 
 	"github.com/LXJ0000/go-kitex/app/user/biz/dal"
 	"github.com/LXJ0000/go-kitex/app/user/conf"
+	"github.com/LXJ0000/go-kitex/common/mtl"
 	"github.com/LXJ0000/go-kitex/common/serversuite"
 	"github.com/LXJ0000/go-kitex/rpc_gen/kitex_gen/user/userservice"
 	"github.com/cloudwego/kitex/pkg/klog"
@@ -15,6 +16,11 @@ import (
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+)
+
+var (
+	serviceName = conf.GetConf().Kitex.Service
+	metricsPort = conf.GetConf().Kitex.MetricsPort
 )
 
 func main() {
@@ -33,6 +39,14 @@ func kitexInit() (opts []server.Option) {
 	if err := godotenv.Load(); err != nil {
 		klog.Fatal("Error loading .env file")
 	}
+	var (
+		registryAddr     = os.Getenv("ETCD_ADDR")
+		registerUserName = os.Getenv("ETCD_USERNAME")
+		registerPassword = os.Getenv("ETCD_PASSWORD")
+	)
+
+	// mtl init
+	mtl.InitMetric(serviceName, registryAddr, registerUserName, registerPassword, metricsPort)
 
 	// init dal
 	dal.Init()
@@ -46,10 +60,10 @@ func kitexInit() (opts []server.Option) {
 		opts,
 		server.WithServiceAddr(addr),
 		server.WithSuite(serversuite.CommonServerSuite{
-			CurrentServiceName:   conf.GetConf().Kitex.Service,
-			RegistryAddr:         os.Getenv("ETCD_ADDR"),
-			RegistryAuthUserName: os.Getenv("ETCD_USERNAME"),
-			RegistryAuthPassword: os.Getenv("ETCD_PASSWORD"),
+			CurrentServiceName:   serviceName,
+			RegistryAddr:         registryAddr,
+			RegistryAuthUserName: registerUserName,
+			RegistryAuthPassword: registerPassword,
 		}),
 	)
 
